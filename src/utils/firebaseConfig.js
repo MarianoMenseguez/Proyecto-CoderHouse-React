@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {collection, getDocs, getFirestore, query, where, doc, getDoc} from "firebase/firestore";
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDPpHK-9579yRKj69FbblHvCWmCNpaCKD4",
@@ -39,4 +39,20 @@ export const firestoreOneFetch = async (item) => {
   } else {
     console.log("No such document!");
   }
+}
+
+export const signInFirebase = async (email, password) => {
+  const auth = getAuth();
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      return user;
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      return errorMessage;
+    });
 }

@@ -18,7 +18,6 @@ export default function CartContextProvider({children}) {
   }, subtotalInicial)
 
   const addItem = (item) => {
-    console.log(cartList)
     if (cartList.filter(elemento => elemento.id === item.id).length === 0) {
       setCartList([...cartList, item])
     } else {
