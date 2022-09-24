@@ -1,7 +1,10 @@
+
 import React, {useContext, useEffect, useState} from "react";
 import swal from 'sweetalert';
 import { Link as LinkRouter, useNavigate } from 'react-router-dom'
 import {AdminContext} from "./AdminContext";
+import {collection, doc, setDoc, updateDoc} from "firebase/firestore";
+import {db} from "../utils/firebaseConfig";
 
 export default function AdminModifyProduct() {
 
@@ -20,6 +23,7 @@ export default function AdminModifyProduct() {
   const [productCategory, setProductCategory] = useState("")
   const [productDescription, setProductDescription] = useState("")
   const [productHigh, setProductHigh] = useState("")
+  const [productID, setProductID] = useState('')
 
   useEffect(() => {
     setProductName(adminContext.productToModify.name)
@@ -30,6 +34,8 @@ export default function AdminModifyProduct() {
     setProductMin(adminContext.productToModify.min)
     setProductStock(adminContext.productToModify.stock)
     setProductDescription(adminContext.productToModify.description)
+    setProductCategory(adminContext.productToModify.category)
+    setProductID(adminContext.productToModify.id)
   }, [reload]);
 
   useEffect(() => {
@@ -38,6 +44,32 @@ export default function AdminModifyProduct() {
       setProductDescription(temporal.join('\n\n'))
     }
   }, [productDescription])
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    let productToModify = {
+      id: productID,
+      name: productName,
+      imageSrc: productImageSrc,
+      imageAlt: productImageAlt,
+      price: productPrice,
+      brand: productBrand,
+      min: productMin,
+      stock: productStock,
+      description: productDescription,
+      category: productCategory
+    }
+    console.log(productToModify)
+
+    const modifyProductInFirebase = async () => {
+      const itemRef = doc(db, "products", productToModify.id);
+      await updateDoc(itemRef, productToModify);
+      return itemRef
+    }
+    modifyProductInFirebase()
+      .then(result => swal("Se ha modificado correctamente el producto con el ID:\n\n" + result.id))
+      .catch(err => console.log(err))
+  }
 
   return (
     <>
@@ -105,7 +137,7 @@ export default function AdminModifyProduct() {
                             id="product-price"
                             className="px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-3 sm:text-sm border-gray-300 rounded-md"
                             placeholder="0.00"
-                            onChange={(event) => setProductPrice(event.target.value)}
+                            onChange={(event) => setProductPrice(Number(event.target.value))}
                             value={productPrice}
                           />
                         </div>
@@ -121,7 +153,7 @@ export default function AdminModifyProduct() {
                             id="product-stock"
                             autoComplete="given-price"
                             className="px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                            onChange={(event) => setProductStock(event.target.value)}
+                            onChange={(event) => setProductStock(Number(event.target.value))}
                             value={productStock}
                           />
                         </div>
@@ -135,7 +167,7 @@ export default function AdminModifyProduct() {
                             id="product-min"
                             autoComplete="given-min"
                             className="px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                            onChange={(event) => setProductMin(event.target.value)}
+                            onChange={(event) => setProductMin(Number(event.target.value))}
                             value={productMin}
                           />
                         </div>
@@ -167,6 +199,15 @@ export default function AdminModifyProduct() {
                             value={productImageAlt}
                           />
                         </div>
+                        <label htmlFor="product-category" className="text-start mt-3 block text-sm font-medium text-gray-700">
+                          Categoría del producto:
+                        </label>
+                        <select onChange={(event) => setProductCategory(event.target.value)} className="capitalize px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" aria-label="Default select example">
+                          <option value={productCategory} >{productCategory}</option>
+                          <option value='cremas'>Cremas</option>
+                          <option value='perfumes'>Perfumes</option>
+                          <option value='accesorios'>Accesorios</option>
+                        </select>
                         <label htmlFor="product-highlight" className="text-start mt-3 block text-sm font-medium text-gray-700">
                           Es un producto destacado:
                         </label>
@@ -196,7 +237,7 @@ export default function AdminModifyProduct() {
                   <button
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-
+                    onClick={handleSubmit}
                   >
                     Modificar producto
                   </button>

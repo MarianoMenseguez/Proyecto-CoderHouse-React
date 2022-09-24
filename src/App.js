@@ -12,6 +12,7 @@ import React, {useContext} from "react";
 import {AdminContext} from "./components/AdminContext";
 import AdminDeleteProduct from "./components/AdminDeleteProduct";
 import AdminOrders from "./components/AdminOrders";
+import Footer from "./components/Footer";
 
 function App() {
   const adminContext = useContext(AdminContext);
@@ -32,6 +33,7 @@ function App() {
           {adminContext.admin && <Route path="/adminOrders" element={<AdminOrders/>}/>}
           <Route path="/*" element={<h1 className="text-3xl mt-12">Sitio no encontrado.</h1>}/>
         </Routes>
+        <Footer />
       </div>
   );
 }

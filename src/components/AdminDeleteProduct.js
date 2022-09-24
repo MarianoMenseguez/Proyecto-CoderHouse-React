@@ -2,6 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import swal from 'sweetalert';
 import {Link as LinkRouter, useNavigate} from 'react-router-dom'
 import {AdminContext} from "./AdminContext";
+import {doc, deleteDoc} from "firebase/firestore";
+import {db} from "../utils/firebaseConfig";
 
 export default function AdminDeleteProduct() {
 
@@ -20,6 +22,7 @@ export default function AdminDeleteProduct() {
   const [productCategory, setProductCategory] = useState("")
   const [productDescription, setProductDescription] = useState("")
   const [productHigh, setProductHigh] = useState("")
+  const[productID, setProductID] = useState('')
 
   useEffect(() => {
     setProductName(adminContext.productToModify.name)
@@ -30,7 +33,25 @@ export default function AdminDeleteProduct() {
     setProductMin(adminContext.productToModify.min)
     setProductStock(adminContext.productToModify.stock)
     setProductDescription(adminContext.productToModify.description)
+    setProductID(adminContext.productToModify.id)
   }, [reload]);
+
+  const deleteProduct = (event) => {
+    event.preventDefault()
+    console.log(productID)
+    const deleteProductInFirebase = async () => {
+      await deleteDoc(doc(db, "products", productID));
+      return productID
+    }
+
+    deleteProductInFirebase()
+      .then(result => swal("Se ha eliminado correctamente el producto con el ID:\n\n" + result))
+      .catch(err => console.log(err))
+
+    setTimeout(() => {
+      navigate("/");
+    }, "5000")
+  }
 
   return (
     <>
@@ -91,26 +112,18 @@ export default function AdminDeleteProduct() {
                           Descripción del producto: {productDescription}
                         </p>
                       </div>
-                      <div className="col-span-6 sm:col-span-3 mt-3">
-                        <p
-                          className="text-start px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        >
-                          Imagen del producto: {productImageSrc}
-                        </p>
-                      </div>
                       <div className="mt-3 w-full px-4 py-3 bg-gray-50 text-center sm:px-6">
                         <button
                           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-
+                          onClick={deleteProduct}
                         >
                           Eliminar producto
                         </button>
                       </div>
-                      </div>
                     </div>
                   </div>
                 </div>
-
+              </div>
             </div>
           </div>
         </div>

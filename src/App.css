@@ -6,7 +6,12 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: rgb(24, 181, 233);;
+}
+
+#root, .App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes spinner {

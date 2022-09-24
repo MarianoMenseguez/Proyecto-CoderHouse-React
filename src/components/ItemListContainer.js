@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import ItemList from "./ItemList";
 import {useParams} from "react-router-dom";
 import { firestoreFetch } from '../utils/firebaseConfig'
+import Hero from "./Hero";
 
 export default function ItemListContainer(props) {
 
@@ -15,8 +16,8 @@ export default function ItemListContainer(props) {
   }, [id])
 
   return (
-    <div className="div-construction pt-0 min-h-[90vh] flex flex-col justify-start items-center">
-      <h1 className="text-3xl mt-12">{props.greetings}</h1>
+    <div className="div-construction pt-0 flex flex-col justify-start items-center">
+      <Hero />
       {
         products.length > 0 ?
         <ItemList items={products}/>

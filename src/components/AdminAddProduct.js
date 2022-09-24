@@ -1,6 +1,9 @@
+
 import React, { useEffect, useState } from "react";
 import swal from 'sweetalert';
 import { Link as LinkRouter, useNavigate } from 'react-router-dom'
+import { doc, collection, setDoc } from "firebase/firestore";
+import {db} from "../utils/firebaseConfig";
 
 export default function AdminAddProduct() {
   const navigate = useNavigate();
@@ -14,7 +17,7 @@ export default function AdminAddProduct() {
   const [productBrand, setProductBrand] = useState("")
   const [productMin, setProductMin] = useState(1)
   const [productStock, setProductStock] = useState(0)
-  const [productCategory, setProductCategory] = useState("")
+  const [productCategory, setProductCategory] = useState("cremas")
   const [productDescription, setProductDescription] = useState("")
   const [productHigh, setProductHigh] = useState("")
 
@@ -39,8 +42,23 @@ export default function AdminAddProduct() {
       brand: productBrand,
       min: productMin,
       stock: productStock,
-      description: productDescription
+      description: productDescription,
+      category: productCategory
     }
+    console.log(productToAdd)
+    const addProductInFirebase = async () => {
+      let newProductRef = doc(collection(db, 'products'))
+      await setDoc(newProductRef, productToAdd)
+      return newProductRef
+    }
+
+    addProductInFirebase()
+      .then(result => swal('Su producto se ha agregado con éxito con la siguiente identificación:\n\n' + result.id))
+      .catch(err => console.log(err))
+
+    setTimeout(() => {
+      navigate("/");
+    }, "5000")
   }
 
   return (
@@ -172,6 +190,15 @@ export default function AdminAddProduct() {
                             value={productImageAlt}
                           />
                         </div>
+                        <label htmlFor="product-category" className="text-start mt-3 block text-sm font-medium text-gray-700">
+                          Categoría del producto:
+                        </label>
+                        <select onChange={(event) => setProductCategory(event.target.value)} className="px-2 py-1 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" aria-label="Default select example">
+                          <option defaultValue='cremas' >Seleccionar categoría</option>
+                          <option value='cremas' >Cremas</option>
+                          <option value='perfumes'>Perfumes</option>
+                          <option value='accesorios'>Accesorios</option>
+                        </select>
                         <label htmlFor="product-highlight" className="text-start mt-3 block text-sm font-medium text-gray-700">
                           Es un producto destacado:
                         </label>
