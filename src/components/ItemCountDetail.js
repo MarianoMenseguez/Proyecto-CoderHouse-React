@@ -1,27 +1,30 @@
-import {useContext, useEffect, useState} from "react";
+import React,{useContext, useEffect, useState} from "react";
 import swal from 'sweetalert';
 import {Link} from "react-router-dom";
 import {CartContext} from "./CartContext";
 
 export default function ItemCountDetail({item}) {
 
-  const [countDetail, setCountDetail] = useState(1);
   const [compra, setCompra] = useState(false)
+  const [countDetail, setCountDetail] = useState(1)
   const cartContext = useContext(CartContext)
 
   useEffect(() => {
-    setCountDetail(item.min)
-  }, [item.min])
+    debugger;
+    setCountDetail(1)
+  }, [1])
 
   function decrement() {
-    if (countDetail !== item.min) {
+    debugger;
+    if (countDetail > 0) {
       setCountDetail(countDetail - 1)
     } else {
-      swal(`¡No puedes agregar menos de ${item.min} unidad!`);
+      swal(`¡No puedes agregar menos de 0 unidades!`);
     }
   }
 
   function increment() {
+    debugger;
     if (countDetail !== item.stock) {
       setCountDetail(countDetail + 1)
     } else {

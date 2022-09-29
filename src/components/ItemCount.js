@@ -13,6 +13,7 @@ export default function ItemCount(props) {
   }
 
   function increment() {
+    debugger; 
     if(count !== props.stock) {
       setCount(count+1)
     } else {

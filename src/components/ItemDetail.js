@@ -12,6 +12,7 @@ export default function ItemDetail(props) {
   }
 
   let temporalDescription = props.item.description
+  debugger;
   if(typeof temporalDescription === typeof 'string') {
     temporalDescription = temporalDescription.split('\\n')
   }

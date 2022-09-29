@@ -8,9 +8,9 @@ import {AdminContext} from "./AdminContext";
 
 const navigation = [
   {name: 'Inicio', to: '/', current: false},
-  {name: 'Cremas', to: '/category/cremas', current: false},
-  {name: 'Perfumes', to: '/category/perfumes', current: false},
-  {name: 'Accesorios', to: '/category/accesorios', current: false},
+  {name: 'camisetas', to: '/category/camisetas', current: false},
+  {name: 'shores', to: '/category/shores', current: false},
+  
 ]
 
 function classNames(...classes) {
